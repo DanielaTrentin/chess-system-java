@@ -1,13 +1,37 @@
-import BoardGame.Board;
-import BoardGame.ChessMatch;
-import BoardGame.UI;
+import BoardGame.*;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 public class Program {
-    public static void main (String[]args){
+    public static void main(String[] args) {
 
-        Board board = new Board(8,8);
-
+        Scanner sc = new Scanner(System.in);
         ChessMatch chessMatch = new ChessMatch();
-        UI.printBoard(chessMatch.getPieces());
+
+        while (true) {
+            try {
+                UI.clearScreen();
+                UI.printBoard(chessMatch.getPieces());
+                System.out.println();
+                System.out.print("Source; ");
+                ChessPosition source = UI.readChessPosition(sc);
+
+                boolean[][] possibleMoves = chessMatch.possibleMoves(source);
+                UI.clearScreen();
+                UI.printBoard(chessMatch.getPieces(), possibleMoves);
+                System.out.println();
+                System.out.print("Target:");
+                ChessPosition target = UI.readChessPosition(sc);
+
+                ChessPiece capturePiece = chessMatch.performChessMove(source, target);
+            } catch (ChessException e) {
+                System.out.println(e.getMessage());
+                sc.nextLine();
+            } catch (InputMismatchException e) {
+                System.out.println(e.getMessage());
+                sc.nextLine();
+            }
+        }
     }
 }
